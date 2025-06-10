@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Kalkulator Web</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .calculator {
+            background: #2c3e50;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 20px 30px rgba(0,0,0,0.3);
+            width: 370px;
+            height: 650px;
+        }
+
+        .display {
+            background: #D9DDDC;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 2em;
+            margin-bottom: 15px;
+            text-align: right;
+            color: black;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            word-break: break-all;
+        }
+
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        .buttons button {
+            padding: 10px 15px;
+            font-size: 1.1em;
+            border: none;
+            border-radius: 10px;
+            background: #637385;
+            color: #ffffff;
+            cursor: pointer;
+            transition: all 0.2s;
+            min-height: 57px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .buttons button:hover {
+            background: #aebdba;
+            transform: translateY(-2px);
+        }
+
+        .buttons button:active {
+            transform: translateY(0);
+        }
+
+        .buttons button.operator {
+            background: #3498db;
+        }
+
+        .buttons button.operator:hover {
+            background: #3498db;
+        }
+
+        .buttons button.function {
+            background: #3498db;
+        }
+
+        .buttons button.function:hover {
+            background: #2980b9;
+        }
+
+        .buttons button.clear {
+            background: #3498db;
+        }
+
+        .buttons button.clear:hover {
+            background: #3498db;
+        }
+
+        .buttons button.equals {
+            background: #27ae60;
+        }
+
+        .buttons button.equals:hover {
+            background: #229954;
+        }
+
+        .buttons button.number {
+            border-radius: 50%;
+            width: 68px;
+            height: 68px;
+            padding: 0;
+            font-weight: bold;
+        }
+
+        .header {
+            margin-bottom: 15px;
+            font-size: 0.8em;
+            text-align: left;
+            color: #ccc;
+        }
+
+        .wide {
+            grid-column: span 2;
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <div class="header">KALKULATOR</div>
+        <div id="display" class="display">0</div>
+        <div class="buttons">
+            <button onclick="memoryRecall()" class="function">MR</button>
+            <button onclick="memoryClear()" class="function">MC</button>
+            <button onclick="memoryAdd()" class="function">M+</button>
+            <button onclick="memorySubtract()" class="function">M-</button>
+
+            <button onclick="clearEntry()" class="clear">CE</button>
+            <button onclick="clearDisplay()" class="clear">C</button>
+            <button onclick="deleteLast()">⌫</button>
+            <button onclick="appendValue('/')" class="operator">÷</button>
+
+            <button onclick="appendValue('7')" class="number">7</button>
+            <button onclick="appendValue('8')" class="number">8</button>
+            <button onclick="appendValue('9')" class="number">9</button>
+            <button onclick="appendValue('*')" class="operator">×</button>
+
+            <button onclick="appendValue('4')" class="number">4</button>
+            <button onclick="appendValue('5')" class="number">5</button>
+            <button onclick="appendValue('6')" class="number">6</button>
+            <button onclick="appendValue('-')" class="operator">−</button>
+
+            <button onclick="appendValue('1')" class="number">1</button>
+            <button onclick="appendValue('2')" class="number">2</button>
+            <button onclick="appendValue('3')" class="number">3</button>
+            <button onclick="appendValue('+')" class="operator">+</button>
+
+            <button onclick="toggleSign()" class="function">±</button>
+            <button onclick="appendValue('0')" class="number">0</button>
+            <button onclick="appendValue('.')">.</button>
+            <button onclick="calculate()" class="equals">=</button>
+
+            <button onclick="sqrt()" class="function">√</button>
+            <button onclick="percentage()" class="function">%</button>
+            <button onclick="reciprocal()" class="function">1/x</button>
+            <button onclick="square()" class="function">x²</button>
+        </div>
+    </div>
+
+    <script>
+        let display = document.getElementById("display");
+        let memory = 0;
+        let lastResult = 0;
+
+        function appendValue(value) {
+            if (display.innerText === "0" && value !== ".") {
+                display.innerText = value;
+            } else {
+                display.innerText += value;
+            }
+        }
+
+        function clearDisplay() {
+            display.innerText = "0";
+        }
+
+        function clearEntry() {
+            display.innerText = "0";
+        }
+
+        function deleteLast() {
+            let current = display.innerText;
+            display.innerText = current.length > 1 ? current.slice(0, -1) : "0";
+        }
+
+        function calculate() {
+            try {
+                let expression = display.innerText.replace(/×/g, '*').replace(/÷/g, '/').replace(/−/g, '-');
+                let result = eval(expression);
+                display.innerText = result;
+                lastResult = result;
+            } catch (e) {
+                display.innerText = "Error";
+            }
+        }
+
+        function toggleSign() {
+            let current = display.innerText;
+            if (current !== "0" && current !== "Error") {
+                if (current.startsWith("-")) {
+                    display.innerText = current.substring(1);
+                } else {
+                    display.innerText = "-" + current;
+                }
+            }
+        }
+
+        function percentage() {
+            try {
+                let current = parseFloat(display.innerText);
+                display.innerText = current / 100;
+            } catch (e) {
+                display.innerText = "Error";
+            }
+        }
+
+        function sqrt() {
+            try {
+                let current = parseFloat(display.innerText);
+                if (current < 0) {
+                    display.innerText = "Error";
+                } else {
+                    display.innerText = Math.sqrt(current);
+                }
+            } catch (e) {
+                display.innerText = "Error";
+            }
+        }
+
+        function square() {
+            try {
+                let current = parseFloat(display.innerText);
+                display.innerText = current * current;
+            } catch (e) {
+                display.innerText = "Error";
+            }
+        }
+
+        function reciprocal() {
+            try {
+                let current = parseFloat(display.innerText);
+                if (current === 0) {
+                    display.innerText = "Error";
+                } else {
+                    display.innerText = 1 / current;
+                }
+            } catch (e) {
+                display.innerText = "Error";
+            }
+        }
+
+        function memoryRecall() {
+            display.innerText = memory;
+        }
+
+        function memoryClear() {
+            memory = 0;
+        }
+
+        function memoryAdd() {
+            try {
+                memory += parseFloat(display.innerText);
+            } catch (e) {
+            }
+        }
+
+        function memorySubtract() {
+            try {
+                memory -= parseFloat(display.innerText);
+            } catch (e) {
+            }
+        }
+
+        document.addEventListener('keydown', function(event) {
+            const key = event.key;
+            
+            if (key >= '0' && key <= '9') {
+                appendValue(key);
+            } else if (key === '.') {
+                appendValue('.');
+            } else if (key === '+') {
+                appendValue('+');
+            } else if (key === '-') {
+                appendValue('-');
+            } else if (key === '*') {
+                appendValue('*');
+            } else if (key === '/') {
+                event.preventDefault(); 
+                appendValue('/');
+            } else if (key === 'Enter' || key === '=') {
+                calculate();
+            } else if (key === 'Escape' || key === 'c' || key === 'C') {
+                clearDisplay();
+            } else if (key === 'Backspace') {
+                deleteLast();
+            }
+        });
+    </script>
+</body>
+</html>
